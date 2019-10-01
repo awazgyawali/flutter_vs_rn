@@ -13,15 +13,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: ComparisionScreen(),
@@ -35,7 +26,12 @@ class ComparisionScreen extends StatefulWidget {
 }
 
 class _ComparisionScreenState extends State<ComparisionScreen> {
-  int flutter = 0, rn = 0, difference = 0;
+  int flutter = 0,
+      rn = 0,
+      flutterf = 0,
+      rnf = 0,
+      difference = 0,
+      differencef = 0;
   Timer t;
   @override
   void initState() {
@@ -45,9 +41,11 @@ class _ComparisionScreenState extends State<ComparisionScreen> {
 
   Future getStarts() async {
     flutter = await getStarFromGithubRepo("flutter/flutter");
-    print(flutter);
     rn = await getStarFromGithubRepo("facebook/react-native");
+    flutterf = await getForksFromGithubRepo("flutter/flutter");
+    rnf = await getForksFromGithubRepo("facebook/react-native");
     difference = rn - flutter;
+    differencef = rnf - flutterf;
     setState(() {});
   }
 
@@ -55,6 +53,12 @@ class _ComparisionScreenState extends State<ComparisionScreen> {
     var resp = await get(
         "https://api.github.com/repos/$repoName?client_id=8f268ae1ea31c6b6309d&client_secret=7dd7decea342b9e7592ff0dd9995a53ff1766f4e");
     return json.decode(resp.body)["stargazers_count"];
+  }
+
+  Future<int> getForksFromGithubRepo(String repoName) async {
+    var resp = await get(
+        "https://api.github.com/repos/$repoName?client_id=8f268ae1ea31c6b6309d&client_secret=7dd7decea342b9e7592ff0dd9995a53ff1766f4e");
+    return json.decode(resp.body)["forks_count"];
   }
 
   @override
@@ -70,30 +74,64 @@ class _ComparisionScreenState extends State<ComparisionScreen> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                "Flutter star",
+                "Flutter vs react native star",
                 style: Theme.of(context).textTheme.title,
               ),
-              Text(
-                "$flutter",
-                style: Theme.of(context).textTheme.display1,
+              Row(
+                children: <Widget>[
+                  Text(
+                    "$flutter Vs",
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    "$rn",
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ],
               ),
               SizedBox(height: 20),
-              Text(
-                "React Native star",
-                style: Theme.of(context).textTheme.title,
+              Row(
+                children: <Widget>[
+                  Text(
+                    "Difference:",
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                  Text(
+                    "$difference",
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ],
               ),
               Text(
-                "$rn",
-                style: Theme.of(context).textTheme.display1,
+                "Flutter vs react native forks",
+                style: Theme.of(context).textTheme.title,
+              ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    "$flutterf Vs",
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    "$rnf",
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ],
               ),
               SizedBox(height: 20),
-              Text(
-                "Difference",
-                style: Theme.of(context).textTheme.title,
-              ),
-              Text(
-                "$difference",
-                style: Theme.of(context).textTheme.display1,
+              Row(
+                children: <Widget>[
+                  Text(
+                    "Difference:",
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                  Text(
+                    "$differencef",
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ],
               ),
             ],
           ),
